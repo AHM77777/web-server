@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const request = require('request-promise-native')
 
 const API_BASE = 'http://api.weatherstack.com'

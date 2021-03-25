@@ -66,11 +66,15 @@ app.get('/weather', (req, res) => {
                     if (error) {
                         return res.send({ error })
                     } else {
-                        const {weather_descriptions, temperature, precip} = data.current
+                        // This line works considering there will be always one result inside the forecast object
+                        // not quite an ideal solution, but it will do for now
+                        const {maxtemp, mintemp} = data.forecast[Object.keys(data.forecast)[0]]
+                        /////////////////////////
+                        const {weather_descriptions, temperature, precip, feelslike} = data.current
                         const {name, region, country} = data.location
                         return res.send({
-                            forecast: '(Summary: ' + weather_descriptions + ') It is currently ' + temperature + ' degrees out. There is a ' + precip + '% chance of rain.',
-                            location: name + ', ' + region + ', ' + country,
+                            forecast: '(Summary: ' + weather_descriptions + ') The highest temperature today will be of ' + maxtemp + ' degrees and the minimum of ' + mintemp +'. It is currently ' + temperature + ' degrees out and feels like ' + feelslike + '. There is a ' + precip + '% chance of rain.',
+                            location: 'Location:' + name + ', ' + region + ', ' + country,
                         })
                     }
                 })
