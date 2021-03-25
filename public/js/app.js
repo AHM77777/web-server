@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = 'http://api.weatherstack.com'
-    const API_KEY = '5779824dcd6b3e016ede3637dc470d21'
-    
     const weather_form = document.getElementById('weather-form')
     const search = weather_form.querySelector('#weather-location')
 
@@ -9,16 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         clearMsgs()
-
         setLoadingMsg(true)
 
-        if (!search.value) {
-            setLoadingMsg(false)
-            setResponseMsg('Address is required', 'error')
-            return false;
-        }
-
-        let weather_query = API_BASE + '/forecast?access_key=' + API_KEY + '&query='
+        let weather_query = '/weather?address='
         weather_query += search.value
         fetch(weather_query)
         .then(res => res.json())
@@ -26,17 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
             setLoadingMsg(false)
 
             if (data.error) {
-                setResponseMsg('Unable to find location. Try another search.', 'error')
+                setResponseMsg(data.error, 'error')
             } else {
                 setResponseMsg('Current weather found!', 'success')
 
-                const {name, region, country} = data.location
-                const {weather_descriptions, temperature, precip} = data.current
-
                 const weather_info_box = document.getElementById('weather-info')
                 weather_info_box.style.display = 'block';
-                weather_info_box.querySelector('p:first-child').innerText = name + ', ' + region + ', ' + country
-                weather_info_box.querySelector('p:last-child').innerText = '(Summary: ' + weather_descriptions + ') It is currently ' + temperature + ' degrees out. There is a ' + precip + '% chance of rain.'
+                weather_info_box.querySelector('p:first-child').innerText = data.location
+                weather_info_box.querySelector('p:last-child').innerText = data.forecast
             }
         })
         .catch(err =>{
